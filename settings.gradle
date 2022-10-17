@@ -1,0 +1,5 @@
+rootProject.name = 'BilgeAdamSocialMediaProject'
+include 'auth-service'
+include 'main-service'
+include 'user-service'
+
