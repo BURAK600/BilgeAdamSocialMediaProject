@@ -49,6 +49,12 @@ allprojects{
         implementation libs.springBootStarterWeb
         implementation libs.lombok
         annotationProcessor libs.lombok
+        annotationProcessor libs.lombokMapstructBinding
+        implementation libs.mapstruct
+        annotationProcessor libs.mapstructProcessor
+        implementation libs.swaggerui
+        implementation libs.springValidation
+
 
     }
 }

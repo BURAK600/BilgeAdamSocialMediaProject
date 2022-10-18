@@ -1,13 +1,17 @@
 package com.burak.controller;
 
 
+import com.burak.dto.request.AuthLoginRequestDto;
 import com.burak.dto.request.AuthRegisterRequestDto;
+import com.burak.dto.response.AuthLoginResponseDto;
+import com.burak.repository.entity.Auth;
 import com.burak.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static com.burak.constants.ApiUrls.*;
 
@@ -18,10 +22,18 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping(REGISTER)
-    public ResponseEntity<String> register(AuthRegisterRequestDto authRegisterRequestDto){
+    @PostMapping(REGISTER)
+    @Operation(summary = "kullanıcı kayıt eden metod") 
+    public ResponseEntity<Auth> register(@RequestBody @Valid AuthRegisterRequestDto authRegisterRequestDto){
 
-        return ResponseEntity.ok("kayıt başarılı");
+        return ResponseEntity.ok(authService.register(authRegisterRequestDto));
+
+    }
+
+    @PostMapping(DOLOGIN)
+    public ResponseEntity<AuthLoginResponseDto> dologin(@RequestBody @Valid AuthLoginRequestDto authLoginRequestDto){
+
+        return ResponseEntity.ok(authService.dologin(authLoginRequestDto).get());
 
     }
 }
