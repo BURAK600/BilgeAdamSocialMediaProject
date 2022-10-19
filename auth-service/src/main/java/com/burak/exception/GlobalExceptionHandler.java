@@ -16,8 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.burak.exception.ErrorType.BAD_REQUEST_ERROR;
-import static com.burak.exception.ErrorType.KULLANICI_ZATEN_KAYITLI;
+import static com.burak.exception.ErrorType.*;
 
 
 @ControllerAdvice
@@ -104,7 +103,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public final ResponseEntity<ErrorMessage> handlePSQLException(
             DataIntegrityViolationException exception) {
-        ErrorType errorType = KULLANICI_ZATEN_KAYITLI;
+        ErrorType errorType = USERNAME_DUBLICATE;
         return new ResponseEntity<>(createError(errorType, exception), errorType.getHttpStatus());
     };
 }

@@ -22,8 +22,9 @@ public enum ErrorType {
     LOGIN_ERROR_USERNAME_ERROR(1002, "Geçerli bir kullanıcı adı giriniz. ", INTERNAL_SERVER_ERROR),
     LOGIN_ERROR_USERNAME_DUPLICATE(1003, "Bu Kullanıcı adı zaten kullanılıyor.", INTERNAL_SERVER_ERROR),
     USER_NOT_FOUND(1004, "Kullanıcı bulunamadı", INTERNAL_SERVER_ERROR),
-    KULLANICI_ZATEN_KAYITLI(100,"Kullanıcı zaten kayıtlı", INTERNAL_SERVER_ERROR),
-    USER_NOT_CREATED(101,"Kayıt Hatası" , INTERNAL_SERVER_ERROR );
+    USERNAME_DUBLICATE(100,"Kullanıcı zaten kayıtlı", INTERNAL_SERVER_ERROR),
+    USER_NOT_CREATED(101,"Kayıt Hatası" , INTERNAL_SERVER_ERROR ),
+    INVALID_ACTIVATED_CODE(102,"Activate code bulunamadı" , INTERNAL_SERVER_ERROR );
 
 
 

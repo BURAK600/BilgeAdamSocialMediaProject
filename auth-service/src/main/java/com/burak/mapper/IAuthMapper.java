@@ -4,6 +4,7 @@ package com.burak.mapper;
 import com.burak.dto.request.AuthLoginRequestDto;
 import com.burak.dto.request.AuthRegisterRequestDto;
 import com.burak.dto.response.AuthLoginResponseDto;
+import com.burak.dto.response.AuthRegisterResponseDto;
 import com.burak.repository.entity.Auth;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -25,6 +26,7 @@ public interface IAuthMapper {
     Auth toAuth(final AuthLoginRequestDto authLoginRequestDto);
 
     AuthLoginResponseDto toAuthLoginResponseDto(final Auth auth);
+    AuthRegisterResponseDto toAuthRegisterResponseDto(final Auth auth);
 
 
 }
