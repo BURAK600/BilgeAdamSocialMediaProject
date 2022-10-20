@@ -15,6 +15,7 @@ import com.burak.repository.entity.Auth;
 import com.burak.repository.enums.Roles;
 import com.burak.repository.enums.Status;
 import com.burak.utility.CodeGenerator;
+import com.burak.utility.JwtTokenManager;
 import com.burak.utility.ServiceManager;
 
 import org.springframework.stereotype.Service;
@@ -26,16 +27,21 @@ import java.util.UUID;
 @Service
 public class AuthService extends ServiceManager<Auth, Long> {
 
+
     private final IUserProfileManager iUserProfileManager;
     private final IAuthRepository iAuthRepository;
 
+    private final JwtTokenManager jwtTokenManager;
 
 
-    public AuthService(IUserProfileManager iUserProfileManager, IAuthRepository iAuthRepository) {
+
+    public AuthService(IUserProfileManager iUserProfileManager, IAuthRepository iAuthRepository, JwtTokenManager jwtTokenManager) {
         super(iAuthRepository);
+
         this.iUserProfileManager = iUserProfileManager;
         this.iAuthRepository = iAuthRepository;
 
+        this.jwtTokenManager = jwtTokenManager;
     }
 
     public Boolean save(AuthRegisterRequestDto authRegisterRequestDto){
@@ -90,13 +96,15 @@ public class AuthService extends ServiceManager<Auth, Long> {
         Optional<Auth> auth = iAuthRepository.findOptionalByUserNameAndPassword(authLoginRequestDto.getUserName(),
                 authLoginRequestDto.getPassword());
 
-        if(auth.isPresent()){
-            return Optional.of(IAuthMapper.INSTANSE.toAuthLoginResponse(auth.get()));
 
+        if(auth.isPresent()){
+            AuthLoginResponseDto authLoginResponseDto = IAuthMapper.INSTANSE.toAuthLoginResponse(auth.get());
+            String token = jwtTokenManager.createToken(authLoginResponseDto.getId());
+            authLoginResponseDto.setToken(token);
+            return Optional.of(authLoginResponseDto);
         }else{
             throw new AuthServiceException(ErrorType.LOGIN_ERROR_WRONG);
         }
-
     }
 
     public  Boolean activatedStatus(ActivatedRequestDto activatedRequestDto) {
@@ -107,7 +115,9 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
         if(auth.get().getActivatedCode().equals(activatedRequestDto.getActivatedCode())){
             auth.get().setStatus(Status.ACTIVE);
+            iUserProfileManager.activateStatus(activatedRequestDto);
             save(auth.get());
+
             return true;
         }
         throw new AuthServiceException(ErrorType.INVALID_ACTIVATED_CODE);

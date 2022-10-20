@@ -29,4 +29,6 @@ public interface IAuthMapper {
     AuthRegisterResponseDto toAuthRegisterResponseDto(final Auth auth);
 
 
+
+
 }

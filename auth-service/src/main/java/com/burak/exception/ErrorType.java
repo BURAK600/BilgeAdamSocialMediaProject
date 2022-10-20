@@ -24,7 +24,12 @@ public enum ErrorType {
     USER_NOT_FOUND(1004, "Kullanıcı bulunamadı", INTERNAL_SERVER_ERROR),
     USERNAME_DUBLICATE(100,"Kullanıcı zaten kayıtlı", INTERNAL_SERVER_ERROR),
     USER_NOT_CREATED(101,"Kayıt Hatası" , INTERNAL_SERVER_ERROR ),
-    INVALID_ACTIVATED_CODE(102,"Activate code bulunamadı" , INTERNAL_SERVER_ERROR );
+    INVALID_ACTIVATED_CODE(102,"Activate code bulunamadı" , INTERNAL_SERVER_ERROR ),
+
+
+    GECERSIZ_TOKEN(202,"Activate code bulunamadı" , INTERNAL_SERVER_ERROR ),
+    GECERSIZ_ID(204,"Gecersiz Id" , INTERNAL_SERVER_ERROR );
+
 
 
 

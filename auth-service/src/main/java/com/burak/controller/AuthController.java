@@ -6,8 +6,6 @@ import com.burak.dto.request.AuthLoginRequestDto;
 import com.burak.dto.request.AuthRegisterRequestDto;
 import com.burak.dto.response.AuthLoginResponseDto;
 import com.burak.dto.response.AuthRegisterResponseDto;
-import com.burak.manager.IUserProfileManager;
-import com.burak.repository.entity.Auth;
 import com.burak.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

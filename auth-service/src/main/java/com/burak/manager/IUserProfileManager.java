@@ -2,6 +2,7 @@ package com.burak.manager;
 
 
 
+import com.burak.dto.request.ActivatedRequestDto;
 import com.burak.dto.request.UserCreateRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -15,5 +16,8 @@ import static com.burak.constants.ApiUrls.SAVE;
 public interface IUserProfileManager {
 
     @PostMapping(SAVE)
-    public ResponseEntity<Boolean> save(@RequestBody UserCreateRequestDto userCreateRequestDto);
+    ResponseEntity<Boolean> save(@RequestBody UserCreateRequestDto userCreateRequestDto);
+
+    @PostMapping("/activate")
+    ResponseEntity<Boolean> activateStatus(@RequestBody ActivatedRequestDto activatedRequestDto);
 }

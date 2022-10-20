@@ -5,22 +5,21 @@ ext{
     postgresql    : "42.5.0",
     mapstruct     : "1.5.2.Final",
     swagger       : "1.6.12",
-    springCloud   : "3.1.4"
-
-
+    springCloud   : "3.1.4",
+    auth0         : "4.1.0"
 
 ]
     libs = [
-            springBootStarterWeb   :"org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
-            springBootDataJpa      :"org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
-            lombok                 :"org.projectlombok:lombok:$versions.lombok",
-            postgresql             :"org.postgresql:postgresql:$versions.postgresql",
-            mapstruct                  : "org.mapstruct:mapstruct:$versions.mapstruct",
-            mapstructProcessor         : "org.mapstruct:mapstruct-processor:$versions.mapstruct",
-            lombokMapstructBinding     : "org.projectlombok:lombok-mapstruct-binding:0.2.0",
-            swaggerui               : "org.springdoc:springdoc-openapi-ui:$versions.swagger",
-            springValidation        : "org.springframework.boot:spring-boot-starter-validation:$versions.springBoot",
-            springOpenFeign            : "org.springframework.cloud:spring-cloud-starter-openfeign:$versions.springCloud"
-
+            springBootStarterWeb       :"org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
+            springBootDataJpa          :"org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
+            lombok                     :"org.projectlombok:lombok:$versions.lombok",
+            postgresql                 :"org.postgresql:postgresql:$versions.postgresql",
+            mapstruct                  :"org.mapstruct:mapstruct:$versions.mapstruct",
+            mapstructProcessor         :"org.mapstruct:mapstruct-processor:$versions.mapstruct",
+            lombokMapstructBinding     :"org.projectlombok:lombok-mapstruct-binding:0.2.0",
+            swaggerui                  :"org.springdoc:springdoc-openapi-ui:$versions.swagger",
+            springValidation           :"org.springframework.boot:spring-boot-starter-validation:$versions.springBoot",
+            springOpenFeign            :"org.springframework.cloud:spring-cloud-starter-openfeign:$versions.springCloud",
+            auth0                      :"com.auth0:java-jwt:$versions.auth0"
     ]
 }

@@ -38,6 +38,8 @@ public class Auth {
     @Enumerated(EnumType.STRING)
     private Status status= Status.PENDING;
 
+    private String token;
+
 
 
 }

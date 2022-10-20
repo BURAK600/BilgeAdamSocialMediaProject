@@ -55,6 +55,7 @@ allprojects{
         implementation libs.swaggerui
         implementation libs.springValidation
         implementation libs.springOpenFeign
+        implementation libs.auth0
 
 
     }
