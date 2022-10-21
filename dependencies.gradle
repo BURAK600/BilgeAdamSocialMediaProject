@@ -20,6 +20,10 @@ ext{
             swaggerui                  :"org.springdoc:springdoc-openapi-ui:$versions.swagger",
             springValidation           :"org.springframework.boot:spring-boot-starter-validation:$versions.springBoot",
             springOpenFeign            :"org.springframework.cloud:spring-cloud-starter-openfeign:$versions.springCloud",
-            auth0                      :"com.auth0:java-jwt:$versions.auth0"
+            auth0                      :"com.auth0:java-jwt:$versions.auth0",
+            // Spring Config Server için gerekli bağımlılıklar
+            springCloudStarterConfig: "org.springframework.cloud:spring-cloud-starter-config:$versions.springCloud",
+            springCloudConfigServer : "org.springframework.cloud:spring-cloud-config-server:$versions.springCloud",
+            springCloudConfigClient : "org.springframework.cloud:spring-cloud-config-client:$versions.springCloud"
     ]
 }

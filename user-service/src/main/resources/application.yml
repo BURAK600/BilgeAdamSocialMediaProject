@@ -1,25 +1,8 @@
-server:
-  port: 8092
-  error:
-    whitelabel:
-      enabled: true
-
 spring:
-  datasource:
-    username: 'postgres'
-    password: 'root'
-    driver-class-name: org.postgresql.Driver
-    url: 'jdbc:postgresql://localhost:5432/socialMediaUser'
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql:
-
-# JWT
-myjwt:
-  secretKey: ${secretKey}
-  audience: ${audience}
-  issuer: ${issuer}
+  cloud:
+    config:
+      uri: http://localhost:8088
+  config:
+    import: "configserver:"
+  application:
+    name: user-service-application

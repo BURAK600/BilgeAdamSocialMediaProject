@@ -2,4 +2,6 @@ rootProject.name = 'BilgeAdamSocialMediaProject'
 include 'auth-service'
 include 'main-service'
 include 'user-service'
+include 'config-server'
+include 'config-server-git'
 

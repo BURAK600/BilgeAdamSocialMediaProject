@@ -11,6 +11,8 @@
         </processorPath>
         <module name="BilgeAdamSocialMediaProject.auth-service.main" />
         <module name="BilgeAdamSocialMediaProject.main" />
+        <module name="BilgeAdamSocialMediaProject.config-server.main" />
+        <module name="BilgeAdamSocialMediaProject.config-server-git.main" />
         <module name="BilgeAdamSocialMediaProject.main-service.main" />
         <module name="BilgeAdamSocialMediaProject.user-service.main" />
       </profile>
