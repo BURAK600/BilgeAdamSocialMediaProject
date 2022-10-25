@@ -73,6 +73,10 @@ public class UserProfilController {
 
       return ResponseEntity.ok(userProfileService.findAllActiveProfile());
    }
+   @GetMapping("/findrole")
+   public ResponseEntity<List<UserProfile>> findRole(String role){
+      return ResponseEntity.ok(userProfileService.findAllOptionalByRole(role).get());
+   }
 
 
 

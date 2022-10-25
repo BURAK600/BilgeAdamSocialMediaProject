@@ -37,8 +37,9 @@ public class UserProfileService extends ServiceManager<UserProfile, Long> {
     public UserProfile save(UserCreateRequestDto userCreateRequestDto) {
         UserProfile userProfile = IUserProfileMapper.INSTANSE.toUserProfile(userCreateRequestDto);
 
-        return iUserProfileRepository.save(userProfile);
-
+        iUserProfileRepository.save(userProfile);
+        cacheManager.getCache("findrole").evict(userProfile.getAuthId());
+        return userProfile;
 
     }
 
@@ -50,6 +51,7 @@ public class UserProfileService extends ServiceManager<UserProfile, Long> {
             throw new UserProfileServiceException(ErrorType.USER_NOT_FOUND);
         }
         userProfile.get().setStatus(Status.ACTIVE);
+        cacheManager.getCache("findbyusername").evict(userProfile.get().getStatus());
         save(userProfile.get());
         return true;
 
@@ -86,11 +88,6 @@ public class UserProfileService extends ServiceManager<UserProfile, Long> {
             throw new UserProfileServiceException(ErrorType.GECERSIZ_TOKEN);
 
         }
-
-
-
-
-
     }
 
     public UserProfileRedisResponseDto get() {
@@ -108,12 +105,16 @@ public class UserProfileService extends ServiceManager<UserProfile, Long> {
             throw new UserProfileServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-
-
     }
 
-    @Cacheable(value = "findallactiveprofile")
+     @Cacheable(value = "findallactiveprofile")
     public List<UserProfile> findAllActiveProfile() {
         return iUserProfileRepository.getActiveProfile();
+    }
+
+
+    @Cacheable(value = "findrole")
+    public Optional<List<UserProfile>> findAllOptionalByRole(String role) {
+        return iUserProfileRepository.findAllOptionalByRole(role);
     }
 }
