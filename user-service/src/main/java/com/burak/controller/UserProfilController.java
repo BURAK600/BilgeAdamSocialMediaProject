@@ -57,7 +57,7 @@ public class UserProfilController {
       return ResponseEntity.ok(userProfileService.updateUserForRedis(userUpdateRequestDto));
    }
 
-@PostMapping("/updateredis")
+   @PostMapping("/updateredis")
    public ResponseEntity<Boolean> updateProfileForRedis(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto){
       return ResponseEntity.ok(userProfileService.updateUserForRedis(userUpdateRequestDto));
    }
@@ -66,6 +66,15 @@ public class UserProfilController {
    public ResponseEntity<UserProfileRedisResponseDto> findByUserName(@PathVariable String userName){
       return ResponseEntity.ok(userProfileService.findByUserName(userName));
    }
+
+   @GetMapping("/findallactiveprofile")
+
+   public ResponseEntity<List<UserProfile>> findAllActiveProfile(){
+
+      return ResponseEntity.ok(userProfileService.findAllActiveProfile());
+   }
+
+
 
 
 }

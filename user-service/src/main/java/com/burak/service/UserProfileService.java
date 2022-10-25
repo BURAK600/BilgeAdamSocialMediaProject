@@ -16,6 +16,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -109,5 +110,10 @@ public class UserProfileService extends ServiceManager<UserProfile, Long> {
 
 
 
+    }
+
+    @Cacheable(value = "findallactiveprofile")
+    public List<UserProfile> findAllActiveProfile() {
+        return iUserProfileRepository.getActiveProfile();
     }
 }
