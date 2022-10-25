@@ -44,4 +44,9 @@ public class AuthController {
 
        return ResponseEntity.ok(authService.activatedStatus(activatedRequestDto));
     }
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello(){
+        return ResponseEntity.ok("hello!!!");
+    }
 }

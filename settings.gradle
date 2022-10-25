@@ -4,4 +4,5 @@ include 'main-service'
 include 'user-service'
 include 'config-server'
 include 'config-server-git'
+include 'api-gateway-service'
 
