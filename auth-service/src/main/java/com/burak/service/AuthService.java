@@ -18,6 +18,7 @@ import com.burak.utility.CodeGenerator;
 import com.burak.utility.JwtTokenManager;
 import com.burak.utility.ServiceManager;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -122,5 +123,18 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
         throw new AuthServiceException(ErrorType.INVALID_ACTIVATED_CODE);
 
+    }
+
+
+
+    @Cacheable(value = "reddisgetupper")
+    public String getUpperCase(String name) {
+        try{
+            Thread.sleep(3000);
+
+        }catch (Exception e){
+
+        }
+        return name.toUpperCase();
     }
 }

@@ -2,6 +2,7 @@ package com.burak.mapper;
 
 import com.burak.dto.request.UserCreateRequestDto;
 import com.burak.dto.request.UserUpdateRequestDto;
+import com.burak.dto.response.UserProfileRedisResponseDto;
 import com.burak.repository.entity.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -18,5 +19,9 @@ public interface IUserProfileMapper {
     UserCreateRequestDto toUserCreateRequestDto(final UserProfile userProfile);
 
     UserProfile toUserProfile(final UserUpdateRequestDto userUpdateRequestDto);
+
+    UserProfileRedisResponseDto toUserProfileRedisResponseDto(final UserProfile userProfile);
+
+
 
 }

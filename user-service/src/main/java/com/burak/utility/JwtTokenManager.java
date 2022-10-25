@@ -35,7 +35,7 @@ public class JwtTokenManager {
                     .withAudience(audience)
                     .withIssuer(issuer)
                     .withIssuedAt(new Date())
-                    .withExpiresAt(new Date(System.currentTimeMillis()+(1000*60)))
+                    .withExpiresAt(new Date(System.currentTimeMillis()+(1000*500)))
                     .withClaim("authId", authId)
                     .sign(algorithm);
             return token;

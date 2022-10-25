@@ -23,6 +23,11 @@ spring:
       hibernate:
         format_sql:
 
+myredis:
+  host: localhost
+  port: 6379
+
+
 # JWT
 myjwt:
   secretKey: ${secretKey}

@@ -9,6 +9,7 @@ import com.burak.dto.response.AuthRegisterResponseDto;
 import com.burak.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +49,12 @@ public class AuthController {
     @GetMapping("/hello")
     public ResponseEntity<String> hello(){
         return ResponseEntity.ok("hello!!!");
+    }
+
+    @GetMapping("reddisgetupper")
+    public ResponseEntity<String> getUpperCase(String name){
+
+        return ResponseEntity.ok(authService.getUpperCase(name));
+
     }
 }
