@@ -1,0 +1,24 @@
+type UserProfile{
+
+#    ! kullanarak null olamayacagını belirleriz
+    id: ID!
+    authId: Int!
+    userName: String!
+    email: String!
+    phone: String!
+
+}
+input UserProfileInput{
+
+    userName: String!
+    password: String!
+    email: String!
+}
+type Query{
+    findByUserName(userName: String!): [UserProfile]
+    findAll: [UserProfile]
+}
+
+type Mutation{
+    createUser(userprofile: UserProfileInput!): Boolean
+}
