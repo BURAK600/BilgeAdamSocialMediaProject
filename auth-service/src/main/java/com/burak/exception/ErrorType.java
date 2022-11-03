@@ -28,8 +28,8 @@ public enum ErrorType {
 
 
     GECERSIZ_TOKEN(202,"Activate code bulunamadı" , INTERNAL_SERVER_ERROR ),
-    GECERSIZ_ID(204,"Gecersiz Id" , INTERNAL_SERVER_ERROR );
-
+    GECERSIZ_ID(204,"Gecersiz Id" , INTERNAL_SERVER_ERROR ),
+    USER_NOT_DELETED(305,"User not deleted", INTERNAL_SERVER_ERROR );
 
 
 

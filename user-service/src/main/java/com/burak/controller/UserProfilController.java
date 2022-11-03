@@ -3,14 +3,18 @@ package com.burak.controller;
 import com.burak.dto.request.ActivatedRequestDto;
 import com.burak.dto.request.UserCreateRequestDto;
 import com.burak.dto.request.UserUpdateRequestDto;
+import com.burak.dto.response.RoleResponseDto;
 import com.burak.dto.response.UserProfileRedisResponseDto;
+import com.burak.dto.response.UserProfileResponseDto;
 import com.burak.exception.ErrorType;
 import com.burak.exception.UserProfileServiceException;
+import com.burak.mapper.IUserProfileMapper;
 import com.burak.repository.entity.UserProfile;
 import com.burak.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +22,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static com.burak.constants.ApiUrls.SAVE;
-import static com.burak.constants.ApiUrls.USERPROFILE;
+import static com.burak.constants.ApiUrls.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,8 +43,9 @@ public class UserProfilController {
    }
 
    @GetMapping("/findall")
-   public ResponseEntity<List<UserProfile>> findAll(){
-      return ResponseEntity.ok(userProfileService.findAll());
+   public ResponseEntity<List<UserProfileResponseDto>> findAll(){
+
+      return ResponseEntity.ok(IUserProfileMapper.INSTANSE.toUserProfileResponseDto(userProfileService.findAll()));
    }
 
 
@@ -73,9 +77,24 @@ public class UserProfilController {
 
       return ResponseEntity.ok(userProfileService.findAllActiveProfile());
    }
-   @GetMapping("/findrole")
-   public ResponseEntity<List<UserProfile>> findRole(String role){
-      return ResponseEntity.ok(userProfileService.findAllOptionalByRole(role).get());
+
+
+   @GetMapping("/findbyrole")
+   public ResponseEntity<List<RoleResponseDto>> findAllByRole(String roles){
+      return ResponseEntity.ok(userProfileService.findByRole(roles));
+   }
+
+
+   @GetMapping(USERPROFILE_LIST)
+   public ResponseEntity<List<UserProfile>> userList(){
+      List<UserProfile> list = userProfileService.findAll();
+      return ResponseEntity.ok(list);
+   }
+
+
+   @GetMapping("/findbypagable")
+   public ResponseEntity<Page<UserProfile>> findAllPage(int pageSize, int pageNumber, String direction, String parameter){
+      return ResponseEntity.ok(userProfileService.findAllPage(pageSize, pageNumber,direction,parameter));
    }
 
 

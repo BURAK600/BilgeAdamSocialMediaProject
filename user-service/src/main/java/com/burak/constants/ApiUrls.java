@@ -11,6 +11,8 @@ public class ApiUrls {
 
     public static final String DELETE =  "/delete";
 
+    public static final String USERPROFILE_LIST =  "/userprofilelist";
+
 
 
 

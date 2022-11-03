@@ -5,19 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-@Table(name = "tblauth")
-@Entity
+@Document
 public class UserProfile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@Id
+    private String id;
     private Long authId;
     private String userName;
     private String password;
@@ -27,10 +26,11 @@ public class UserProfile {
     private String photo;
     private String address;
     private String about;
-    private Long created;
+    @Builder.Default
+    private Long created = System.currentTimeMillis();
     private Long updated;
 
-    @Enumerated(EnumType.STRING)
+
     @Builder.Default
     private Status status = Status.PENDING;
 }

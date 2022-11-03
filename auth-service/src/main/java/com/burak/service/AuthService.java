@@ -4,8 +4,10 @@ import com.burak.dto.request.ActivatedRequestDto;
 import com.burak.dto.request.AuthLoginRequestDto;
 import com.burak.dto.request.AuthRegisterRequestDto;
 import com.burak.dto.request.UserCreateRequestDto;
+import com.burak.dto.response.ActivePendingUserResponseDto;
 import com.burak.dto.response.AuthLoginResponseDto;
 import com.burak.dto.response.AuthRegisterResponseDto;
+import com.burak.dto.response.RoleResponseDto;
 import com.burak.exception.AuthServiceException;
 import com.burak.exception.ErrorType;
 import com.burak.manager.IUserProfileManager;
@@ -18,11 +20,15 @@ import com.burak.utility.CodeGenerator;
 import com.burak.utility.JwtTokenManager;
 import com.burak.utility.ServiceManager;
 
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,17 +40,20 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
     private final JwtTokenManager jwtTokenManager;
 
+    private final CacheManager cacheManager;
 
 
-    public AuthService(IUserProfileManager iUserProfileManager, IAuthRepository iAuthRepository, JwtTokenManager jwtTokenManager) {
+    public AuthService(IUserProfileManager iUserProfileManager, IAuthRepository iAuthRepository, JwtTokenManager jwtTokenManager, CacheManager cacheManager) {
         super(iAuthRepository);
 
         this.iUserProfileManager = iUserProfileManager;
         this.iAuthRepository = iAuthRepository;
 
         this.jwtTokenManager = jwtTokenManager;
+        this.cacheManager = cacheManager;
     }
 
+    @Transactional
     public Boolean save(AuthRegisterRequestDto authRegisterRequestDto){
         Auth auth = Auth.builder().userName(authRegisterRequestDto.getUserName())
                 .password(authRegisterRequestDto.getPassword())
@@ -76,6 +85,8 @@ public class AuthService extends ServiceManager<Auth, Long> {
         try {
             auth.setActivatedCode(CodeGenerator.generatedCode(UUID.randomUUID().toString()));
             save(auth);
+            cacheManager.getCache("findbyrole").evict(auth.getRole());
+
             iUserProfileManager.save(UserCreateRequestDto.builder()
                             .authId(auth.getId())
                             .email(auth.getEmail())
@@ -118,13 +129,13 @@ public class AuthService extends ServiceManager<Auth, Long> {
             auth.get().setStatus(Status.ACTIVE);
             iUserProfileManager.activateStatus(activatedRequestDto);
             save(auth.get());
+            cacheManager.getCache("findactiveprofile").clear();
 
             return true;
         }
         throw new AuthServiceException(ErrorType.INVALID_ACTIVATED_CODE);
 
     }
-
 
 
     @Cacheable(value = "reddisgetupper")
@@ -136,5 +147,45 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
         }
         return name.toUpperCase();
+    }
+
+
+
+    public List<RoleResponseDto>  findByRole(String roles){
+        Roles roles1 = null;
+        try {
+            roles1 = Roles.valueOf(roles.toUpperCase());
+
+        }catch (Exception e){
+            return null;
+        }
+
+        return iAuthRepository.findAllByRole(roles1).stream().
+                map(x->IAuthMapper.INSTANSE.toRoleResponseDto(x)).collect(Collectors.toList());
+
+    }
+
+
+    public Boolean delete(String token) {
+
+        Optional<Long> authId = jwtTokenManager.getByIdFromToken(token);
+        if(authId.isEmpty()) throw new AuthServiceException(ErrorType.GECERSIZ_TOKEN);
+        Optional<Auth> auth = iAuthRepository.findById(authId.get());
+        if(auth.isEmpty()) throw new AuthServiceException(ErrorType.USER_NOT_FOUND);
+
+        try{
+            auth.get().setStatus(Status.DELETED);
+            save(auth.get());
+            return true;
+        }catch (Exception e){
+            throw new AuthServiceException(ErrorType.USER_NOT_DELETED);
+        }
+    }
+
+    public List<ActivePendingUserResponseDto> getActivePendingUsers() {
+        Optional<List<Auth>> auths = iAuthRepository.findAllActiveAndPendingAuth();
+        List<ActivePendingUserResponseDto> activePendingUserResponseDto = IAuthMapper.INSTANSE.toActivePendingUserResponseDto(auths.get());
+
+        return activePendingUserResponseDto;
     }
 }

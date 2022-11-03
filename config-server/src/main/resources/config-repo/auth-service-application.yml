@@ -27,6 +27,9 @@ myredis:
   host: localhost
   port: 6379
 
+myapplication:
+  user:
+    feign-user: http://localhost:8092/api/v1
 
 # JWT
 myjwt:
