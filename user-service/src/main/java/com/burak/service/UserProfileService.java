@@ -10,6 +10,8 @@ import com.burak.exception.UserProfileServiceException;
 import com.burak.manager.IAuthManager;
 import com.burak.manager.IElasticSearchManager;
 import com.burak.mapper.IUserProfileMapper;
+import com.burak.rabbitmq.model.UpdateUserNameEmailModel;
+import com.burak.rabbitmq.producer.UpdateUserProcedure;
 import com.burak.repository.IUserProfileRepository;
 import com.burak.repository.entity.UserProfile;
 import com.burak.repository.enums.Status;
@@ -36,13 +38,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final CacheManager cacheManager;
     private final IAuthManager iAuthManager;
     private final IElasticSearchManager iElasticSearchManager;
-    public UserProfileService(IUserProfileRepository iUserProfileRepository, JwtTokenManager jwtTokenManager, CacheManager cacheManager, IAuthManager iAuthManager, IElasticSearchManager iElasticSearchManager) {
+
+    private final UpdateUserProcedure updateUserProcedure;
+    public UserProfileService(IUserProfileRepository iUserProfileRepository, JwtTokenManager jwtTokenManager, CacheManager cacheManager, IAuthManager iAuthManager, IElasticSearchManager iElasticSearchManager, UpdateUserProcedure updateUserProcedure) {
         super(iUserProfileRepository);
         this.iUserProfileRepository = iUserProfileRepository;
         this.jwtTokenManager = jwtTokenManager;
         this.cacheManager = cacheManager;
         this.iAuthManager = iAuthManager;
         this.iElasticSearchManager = iElasticSearchManager;
+        this.updateUserProcedure = updateUserProcedure;
     }
     @Transactional
     public UserProfile save(UserCreateRequestDto userCreateRequestDto) {
@@ -100,7 +105,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (autId.isPresent()) {
             Optional<UserProfile> userProfileDb = iUserProfileRepository.findOptinalByAuthId(autId.get());
             if (userProfileDb.isPresent()) {
-                cacheManager.getCache("update").evict(userProfileDb.get().getUserName());
+                cacheManager.getCache("update").evict(userProfileDb.get().getUserName().toUpperCase());
 
                 userProfileDb.get().setEmail(userUpdateRequestDto.getEmail());
                 userProfileDb.get().setPhone(userUpdateRequestDto.getPhone());
@@ -119,9 +124,53 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileServiceException(ErrorType.GECERSIZ_TOKEN);
         }
     }
-    public UserProfileRedisResponseDto get() {
-        return null;
+
+    public Boolean updateUserWithRabbitMQ(UserUpdateRequestDto userUpdateRequestDto) {
+
+        Optional<Long> autId = jwtTokenManager.getByIdFromToken(userUpdateRequestDto.getToken());
+        if (autId.isPresent()) {
+            Optional<UserProfile> userProfileDb = iUserProfileRepository.findOptinalByAuthId(autId.get());
+            if (userProfileDb.isPresent()) {
+                boolean check = checkingUserNameAndEmail(userUpdateRequestDto, userProfileDb.get());
+                cacheManager.getCache("update").evict(userProfileDb.get().getUserName().toUpperCase());
+                userProfileDb.get().setEmail(userUpdateRequestDto.getEmail());
+                userProfileDb.get().setPhone(userUpdateRequestDto.getPhone());
+                userProfileDb.get().setAddress(userUpdateRequestDto.getAddress());
+                userProfileDb.get().setAbout(userUpdateRequestDto.getAbout());
+                userProfileDb.get().setPhoto(userUpdateRequestDto.getPhoto());
+                userProfileDb.get().setName(userUpdateRequestDto.getName());
+                userProfileDb.get().setUserName(userUpdateRequestDto.getUserName());
+                save(userProfileDb.get());
+                if(check){
+                    updateUserProcedure.sendUpdateUser(UpdateUserNameEmailModel.builder()
+                            .email(userProfileDb.get().getEmail())
+                            .userName(userProfileDb.get().getUserName())
+                                    .id(userProfileDb.get().getAuthId())
+                            .build());
+                }
+                iElasticSearchManager.updateUser(userProfileDb.get());
+                return true;
+            }else{
+                throw new UserProfileServiceException(ErrorType.USER_NOT_FOUND);
+            }
+        } else {
+            throw new UserProfileServiceException(ErrorType.GECERSIZ_TOKEN);
+        }
     }
+
+    public Boolean checkingUserNameAndEmail(UserUpdateRequestDto userUpdateRequestDto, UserProfile userProfile){
+        boolean check = false;
+        if(!userUpdateRequestDto.getUserName().equals(userProfile.getUserName())){
+            check = true;
+
+        }
+        if(!userUpdateRequestDto.getEmail().equals(userProfile.getEmail())){
+            check = true;
+        }
+        return false;
+
+    }
+
 @Cacheable(value = "findbyusername", key = "#username.toUpperCase()")
     public UserProfileRedisResponseDto  findByUserName(String userName) {
         Optional<UserProfile> userProfile = iUserProfileRepository.findOptinalByUserNameEqualsIgnoreCase(userName);

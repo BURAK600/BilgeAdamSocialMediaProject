@@ -20,7 +20,7 @@ public class UserComponent {
     private final IUserProfileManager iUserProfileManager;
     private final UserProfileService userProfileService;
 
-    @PostConstruct
+//    @PostConstruct
     public void firstRun(){
         List<UserProfileResponseDto> userProfiles = iUserProfileManager.userList().getBody();
         userProfileService.saveAll(userProfiles.stream().map(userProfile->

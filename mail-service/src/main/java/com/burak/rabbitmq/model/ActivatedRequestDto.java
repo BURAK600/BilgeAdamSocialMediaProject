@@ -1,6 +1,5 @@
-package com.burak.dto.request;
+package com.burak.rabbitmq.model;
 
-import com.burak.repository.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
+
 public class ActivatedRequestDto {
+
     private Long id;
     private String activatedCode;
     private String email;

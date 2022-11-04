@@ -12,6 +12,8 @@ import com.burak.exception.AuthServiceException;
 import com.burak.exception.ErrorType;
 import com.burak.manager.IUserProfileManager;
 import com.burak.mapper.IAuthMapper;
+import com.burak.rabbitmq.model.UpdateUserNameEmailModel;
+import com.burak.rabbitmq.producer.ActivatedCodeProcedure;
 import com.burak.repository.IAuthRepository;
 import com.burak.repository.entity.Auth;
 import com.burak.repository.enums.Roles;
@@ -20,6 +22,7 @@ import com.burak.utility.CodeGenerator;
 import com.burak.utility.JwtTokenManager;
 import com.burak.utility.ServiceManager;
 
+import org.hibernate.sql.Update;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthService extends ServiceManager<Auth, Long> {
 
-
+private final ActivatedCodeProcedure activatedCodeProcedure;
     private final IUserProfileManager iUserProfileManager;
     private final IAuthRepository iAuthRepository;
 
@@ -43,8 +46,9 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final CacheManager cacheManager;
 
 
-    public AuthService(IUserProfileManager iUserProfileManager, IAuthRepository iAuthRepository, JwtTokenManager jwtTokenManager, CacheManager cacheManager) {
+    public AuthService(ActivatedCodeProcedure activatedCodeProcedure, IUserProfileManager iUserProfileManager, IAuthRepository iAuthRepository, JwtTokenManager jwtTokenManager, CacheManager cacheManager) {
         super(iAuthRepository);
+        this.activatedCodeProcedure = activatedCodeProcedure;
 
         this.iUserProfileManager = iUserProfileManager;
         this.iAuthRepository = iAuthRepository;
@@ -91,6 +95,11 @@ public class AuthService extends ServiceManager<Auth, Long> {
                             .authId(auth.getId())
                             .email(auth.getEmail())
                             .userName(auth.getUserName())
+                    .build());
+            activatedCodeProcedure.sendActivationCode(com.burak.rabbitmq.model.ActivatedRequestDto.builder()
+                            .activatedCode(auth.getActivatedCode())
+                            .email(auth.getEmail())
+
                     .build());
             return IAuthMapper.INSTANSE.toAuthRegisterResponseDto(auth);
         }catch (AuthServiceException a){
@@ -187,5 +196,21 @@ public class AuthService extends ServiceManager<Auth, Long> {
         List<ActivePendingUserResponseDto> activePendingUserResponseDto = IAuthMapper.INSTANSE.toActivePendingUserResponseDto(auths.get());
 
         return activePendingUserResponseDto;
+    }
+
+    public boolean updateAuth(UpdateUserNameEmailModel model){
+        Optional<Auth> auth = iAuthRepository.findById(model.getId());
+
+        if(auth.isPresent()){
+            auth.get().setEmail(model.getEmail());
+            auth.get().setUserName(model.getUserName());
+        }else{
+            throw new AuthServiceException(ErrorType.USER_NOT_FOUND);
+        }
+        save(auth.get());
+
+
+
+
     }
 }

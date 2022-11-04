@@ -9,6 +9,7 @@ dependencies {
     implementation libs.postgresql
     implementation libs.springCloudConfigClient
     implementation libs.springDataRedis
+    implementation libs.springBootRabbitMQ
 
 }
 

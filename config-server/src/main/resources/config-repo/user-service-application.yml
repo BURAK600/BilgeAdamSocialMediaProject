@@ -5,6 +5,11 @@ server:
       enabled: true
 
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: bilgeadmin
+    password: bilge!
   data:
     mongodb:
       host: 34.122.175.53
@@ -33,3 +38,9 @@ myjwt:
   secretKey: ${secretKey}
   audience: ${audience}
   issuer: ${issuer}
+
+
+rabbitmq:
+  exchange-user: user-exchange
+  userUpdateQueue: user-update-key
+  userUpdateBinding: user-update-queue

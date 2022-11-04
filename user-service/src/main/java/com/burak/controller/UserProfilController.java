@@ -65,6 +65,10 @@ public class UserProfilController {
    public ResponseEntity<Boolean> updateProfileForRedis(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto){
       return ResponseEntity.ok(userProfileService.updateUserForRedis(userUpdateRequestDto));
    }
+@PutMapping("/updatewithrabbitmq")
+   public ResponseEntity<Boolean> updateProfileWithRabbitMQ(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto){
+      return ResponseEntity.ok(userProfileService.updateUserWithRabbitMQ(userUpdateRequestDto));
+   }
 
    @GetMapping("/findbyusername/{userName}")
    public ResponseEntity<UserProfileRedisResponseDto> findByUserName(@PathVariable String userName){
@@ -96,6 +100,8 @@ public class UserProfilController {
    public ResponseEntity<Page<UserProfile>> findAllPage(int pageSize, int pageNumber, String direction, String parameter){
       return ResponseEntity.ok(userProfileService.findAllPage(pageSize, pageNumber,direction,parameter));
    }
+
+
 
 
 

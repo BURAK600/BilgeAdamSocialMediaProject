@@ -1,6 +1,5 @@
 package com.burak.dto.request;
 
-import com.burak.repository.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

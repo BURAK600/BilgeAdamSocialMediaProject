@@ -5,6 +5,11 @@ server:
       enabled: true
 
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: bilgeadmin
+    password: bilge!
   zipkin:
     enabled: true
     base-url: http://localhost:9411
@@ -36,3 +41,9 @@ myjwt:
   secretKey: ${secretKey}
   audience: ${audience}
   issuer: ${issuer}
+
+
+rabbitmq:
+  exchange-user: user-exchange
+  userUpdateQueue: user-update-key
+  userUpdateBinding: user-update-queue
